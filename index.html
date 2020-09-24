@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<style type="text/css">
+	#gallery {
+		
+	}
+	#gallery img { width: 50px; }
+</style>
+<body>
+
+</body>
+<script type="text/javascript">
+	
+	async function fetchLatestPosts (profileId) {
+		const url = `https://www.instagram.com/${profileId}/?__a=1`;
+		const response = await fetch(url);
+		const data = await response.json();
+
+		const latest = data.graphql.user.edge_owner_to_timeline_media.edges;
+		const thumbnails = [];
+
+		latest.forEach(element => thumbnails.push(element.node.thumbnail_src));
+
+		return thumbnails;
+	}
+
+	async function createGallery (profileId) {
+		const thumbnails = await fetchLatestPosts(profileId);
+		const container = document.createElement('div');
+		container.id = 'gallery';
+
+		thumbnails.forEach(thumbnail => {
+			const img = document.createElement('img');
+			img.src = thumbnail;
+			container.appendChild(img);
+		});
+		
+		document.body.appendChild(container);
+	}
+
+	const fetchProfiles = ['rodrigogolfeto'];
+	const fetchProfile = fetchProfiles[Math.floor(Math.random() * fetchProfiles.length)];
+	
+	createGallery(fetchProfile);
+
+</script>
+</html>
